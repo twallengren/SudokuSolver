@@ -11,21 +11,109 @@ public class GridSquare {
   private GridSquare right;
   private GridSquare above;
   private GridSquare below;
-  private Set<Integer> invalidValues;
+  private final Set<Integer> invalidValues;
+  int rowFormCoordX = -1;
+  int rowFormCoordY = -1;
+  int colFormCoordX = -1;
+  int colFormCoordY = -1;
+  int gridFormCoordX = -1;
+  int gridFormCoordY = -1;
 
-  GridSquare(
-      Integer value,
-      GridSquare left,
-      GridSquare right,
-      GridSquare above,
-      GridSquare below,
-      Set<Integer> invalidValues) {
+  GridSquare(Integer value) {
+
+    if (value != null && !VALID_INTEGERS.contains(value)) {
+      throw new IllegalArgumentException("Value must be in " + VALID_INTEGERS);
+    }
+
     this.value = value;
-    this.left = left;
-    this.right = right;
-    this.above = above;
-    this.below = below;
-    this.invalidValues = invalidValues;
+    this.left = null;
+    this.right = null;
+    this.above = null;
+    this.below = null;
+
+    Set<Integer> invalidSet;
+    if (value != null) {
+      invalidSet = new HashSet<>(VALID_INTEGERS);
+      invalidSet.remove(value);
+    } else {
+      invalidSet = new HashSet<>();
+    }
+    this.invalidValues = invalidSet;
+  }
+
+  void setRowFormCoordinate(int x, int y) {
+    if (rowFormCoordX == -1) {
+      rowFormCoordX = x;
+    }
+    if (rowFormCoordY == -1) {
+      rowFormCoordY = y;
+    }
+  }
+
+  void setColFormCoordinate(int x, int y) {
+    if (colFormCoordX == -1) {
+      colFormCoordX = x;
+    }
+    if (colFormCoordY == -1) {
+      colFormCoordY = y;
+    }
+  }
+
+  void setGridFormCoordinate(int x, int y) {
+    if (gridFormCoordX == -1) {
+      gridFormCoordX = x;
+    }
+    if (gridFormCoordY == -1) {
+      gridFormCoordY = y;
+    }
+  }
+
+  void setLeftNeighbor(GridSquare leftNeighbor) {
+    if (left != null) {
+      return;
+    }
+    this.left = leftNeighbor;
+  }
+
+  void setRightNeighbor(GridSquare rightNeighbor) {
+    if (right != null) {
+      return;
+    }
+    this.right = rightNeighbor;
+  }
+
+  void setAboveNeighbor(GridSquare aboveNeighbor) {
+    if (above != null) {
+      return;
+    }
+    this.above = aboveNeighbor;
+  }
+
+  void setBelowNeighbor(GridSquare belowNeighbor) {
+    if (below != null) {
+      return;
+    }
+    this.below = belowNeighbor;
+  }
+
+  void addInvalidValues(int[] invalidValues) {
+    if (value != null) {
+      return;
+    }
+    for (int invalidValue : invalidValues) {
+      if (invalidValue == 0) {
+        continue;
+      }
+      this.invalidValues.add(invalidValue);
+    }
+    if (this.invalidValues.size() > 8) {
+      System.out.println("Oh no");
+    }
+    if (this.invalidValues.size() == 8) {
+      Set<Integer> validValues = new HashSet<>(VALID_INTEGERS);
+      validValues.removeAll(this.invalidValues);
+      validValues.stream().findFirst().ifPresent(validValue -> value = validValue);
+    }
   }
 
   Optional<Integer> getValue() {
@@ -50,53 +138,5 @@ public class GridSquare {
 
   Set<Integer> getInvalidValues() {
     return invalidValues;
-  }
-
-  static class Builder {
-
-    private Integer value;
-    private GridSquare left;
-    private GridSquare right;
-    private GridSquare above;
-    private GridSquare below;
-    private final Set<Integer> invalidValues = new HashSet<>();
-
-    Builder withValue(int value) {
-      if (!VALID_INTEGERS.contains(value)) {
-        throw new IllegalArgumentException("Value must be in " + VALID_INTEGERS);
-      }
-      this.value = value;
-      invalidValues.addAll(VALID_INTEGERS);
-      invalidValues.remove(value);
-      return this;
-    }
-
-    Builder withLeftNeighbor(GridSquare left) {
-      this.left = left;
-      left.getValue().ifPresent(invalidValues::add);
-      return this;
-    }
-
-    Builder withRightNeighbor(GridSquare right) {
-      this.right = right;
-      right.getValue().ifPresent(invalidValues::add);
-      return this;
-    }
-
-    Builder withAboveNeighbor(GridSquare above) {
-      this.above = above;
-      above.getValue().ifPresent(invalidValues::add);
-      return this;
-    }
-
-    Builder withBelowNeighbor(GridSquare below) {
-      this.below = below;
-      below.getValue().ifPresent(invalidValues::add);
-      return this;
-    }
-
-    GridSquare build() {
-      return new GridSquare(value, left, right, above, below, invalidValues);
-    }
   }
 }
