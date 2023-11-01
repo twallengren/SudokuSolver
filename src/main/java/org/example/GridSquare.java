@@ -120,6 +120,10 @@ public class GridSquare {
     return Optional.ofNullable(value);
   }
 
+  boolean isInvalidValue(int value) {
+    return invalidValues.contains(value);
+  }
+
   Optional<GridSquare> getLeftNeighbor() {
     return Optional.ofNullable(left);
   }
