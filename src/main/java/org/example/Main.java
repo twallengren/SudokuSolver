@@ -29,8 +29,18 @@ public class Main {
     int[] masterRow5 = new int[] {0, 8, 5, 0, 6, 0, 0, 0, 1};
     int[] masterRow6 = new int[] {0, 0, 0, 4, 0, 0, 6, 0, 0};
     int[] masterRow7 = new int[] {0, 6, 1, 0, 4, 0, 0, 0, 8};
-    int[] masterRow8 = new int[] {0, 0, 0, 0, 0, 2, 0, 7, 0};
+    int[] masterRow8 = new int[] {0, 4, 0, 0, 0, 2, 0, 7, 0};
     int[] masterRow9 = new int[] {3, 0, 0, 0, 0, 0, 0, 0, 0};
+
+//    int[] masterRow1 = new int[] {9, 0, 8, 3, 5, 4, 0, 6, 0};
+//    int[] masterRow2 = new int[] {2, 5, 3, 7, 0, 6, 0, 8, 0};
+//    int[] masterRow3 = new int[] {4, 0, 6, 0, 2, 0, 0, 0, 3};
+//    int[] masterRow4 = new int[] {6, 9, 4, 0, 0, 0, 8, 0, 0};
+//    int[] masterRow5 = new int[] {7, 8, 5, 2, 6, 0, 0, 0, 1};
+//    int[] masterRow6 = new int[] {1, 3, 2, 4, 0, 0, 6, 0, 0};
+//    int[] masterRow7 = new int[] {5, 6, 1, 9, 4, 7, 0, 0, 8};
+//    int[] masterRow8 = new int[] {8, 4, 9, 0, 3, 2, 0, 7, 0};
+//    int[] masterRow9 = new int[] {3, 2, 7, 0, 0, 0, 0, 0, 0};
 
     int[][] masterPuzzle =
         new int[][] {
@@ -138,15 +148,18 @@ public class Main {
       return;
     }
 
+    int gridA = 0;
+    int gridB = 3;
+
     // start looking at group transformations between 3x3 grids
     System.out.println("A -> B");
-    String[][] Tab = computeTransformationMatrix("AB", 0, 3, gridForm, grid);
+    String[][] Tab = computeTransformationMatrix("AB", gridA, gridB, gridForm, grid);
     printTransformation(Tab, "5");
     System.out.println();
 
     // start looking at group transformations between 3x3 grids
     System.out.println("B -> A");
-    String[][] Tba = computeTransformationMatrix("BA", 3, 0, gridForm, grid);
+    String[][] Tba = computeTransformationMatrix("BA", gridB, gridA, gridForm, grid);
     printTransformation(Tba, "5");
     System.out.println();
 
