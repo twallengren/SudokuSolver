@@ -20,8 +20,11 @@ public class Main {
           easyRow1, easyRow2, easyRow3, easyRow4, easyRow5, easyRow6, easyRow7, easyRow8, easyRow9
         };
 
-    solveAndPrintPuzzle("EASY PUZZLE", easyPuzzle);
+    SudokuBoard easyBoard = new SudokuBoard(easyPuzzle);
+    easyBoard.print();
 
+//    solveAndPrintPuzzle("EASY PUZZLE", easyPuzzle);
+//
     int[] masterRow1 = new int[] {9, 0, 0, 0, 5, 0, 0, 6, 0};
     int[] masterRow2 = new int[] {0, 5, 3, 7, 0, 0, 0, 8, 0};
     int[] masterRow3 = new int[] {4, 0, 0, 0, 0, 0, 0, 0, 3};
@@ -31,17 +34,17 @@ public class Main {
     int[] masterRow7 = new int[] {0, 6, 1, 0, 4, 0, 0, 0, 8};
     int[] masterRow8 = new int[] {0, 4, 0, 0, 0, 2, 0, 7, 0};
     int[] masterRow9 = new int[] {3, 0, 0, 0, 0, 0, 0, 0, 0};
-
-//    int[] masterRow1 = new int[] {9, 0, 8, 3, 5, 4, 0, 6, 0};
-//    int[] masterRow2 = new int[] {2, 5, 3, 7, 0, 6, 0, 8, 0};
-//    int[] masterRow3 = new int[] {4, 0, 6, 0, 2, 0, 0, 0, 3};
-//    int[] masterRow4 = new int[] {6, 9, 4, 0, 0, 0, 8, 0, 0};
-//    int[] masterRow5 = new int[] {7, 8, 5, 2, 6, 0, 0, 0, 1};
-//    int[] masterRow6 = new int[] {1, 3, 2, 4, 0, 0, 6, 0, 0};
-//    int[] masterRow7 = new int[] {5, 6, 1, 9, 4, 7, 0, 0, 8};
-//    int[] masterRow8 = new int[] {8, 4, 9, 0, 3, 2, 0, 7, 0};
-//    int[] masterRow9 = new int[] {3, 2, 7, 0, 0, 0, 0, 0, 0};
-
+//
+////    int[] masterRow1 = new int[] {9, 0, 8, 3, 5, 4, 0, 6, 0};
+////    int[] masterRow2 = new int[] {2, 5, 3, 7, 0, 6, 0, 8, 0};
+////    int[] masterRow3 = new int[] {4, 0, 6, 0, 2, 0, 0, 0, 3};
+////    int[] masterRow4 = new int[] {6, 9, 4, 0, 0, 0, 8, 0, 0};
+////    int[] masterRow5 = new int[] {7, 8, 5, 2, 6, 0, 0, 0, 1};
+////    int[] masterRow6 = new int[] {1, 3, 2, 4, 0, 0, 6, 0, 0};
+////    int[] masterRow7 = new int[] {5, 6, 1, 9, 4, 7, 0, 0, 8};
+////    int[] masterRow8 = new int[] {8, 4, 9, 0, 3, 2, 0, 7, 0};
+////    int[] masterRow9 = new int[] {3, 2, 7, 0, 0, 0, 0, 0, 0};
+//
     int[][] masterPuzzle =
         new int[][] {
           masterRow1,
@@ -55,7 +58,10 @@ public class Main {
           masterRow9
         };
 
-    solveAndPrintPuzzle("MASTER PUZZLE", masterPuzzle);
+    SudokuBoard masterBoard = new SudokuBoard(masterPuzzle);
+    masterBoard.print();
+//
+//    solveAndPrintPuzzle("MASTER PUZZLE", masterPuzzle);
   }
 
   private static void solveAndPrintPuzzle(String puzzleName, int[][] rowForm) {
@@ -92,7 +98,7 @@ public class Main {
         } else {
           gridSquare = new GridSquare(null);
         }
-        gridSquare.setRowFormCoordinate(rowIndex, colIndex);
+        gridSquare.setCoordinates(rowIndex, colIndex);
         gridSquare.setColFormCoordinate(colIndex, rowIndex);
         grid[rowIndex][colIndex] = gridSquare;
       }
@@ -148,8 +154,8 @@ public class Main {
       return;
     }
 
-    int gridA = 0;
-    int gridB = 3;
+    int gridA = 2;
+    int gridB = 8;
 
     // start looking at group transformations between 3x3 grids
     System.out.println("A -> B");
@@ -290,12 +296,12 @@ public class Main {
         // need to convert (gridNumB, j) in gridForm -> (row, col)
         Set<GridSquare> squaresToCheck = Arrays.stream(grid)
                 .flatMap(Arrays::stream) // Flatten the 2D array to a Stream<GridSquare>
-                .filter(gs -> gs.gridFormCoordX == gridNumB) // Filter by gridCoordX
+                .filter(gs -> gs.gridFormX == gridNumB) // Filter by gridCoordX
                 .collect(Collectors.toSet()); // Collect into a Set
 
         for (GridSquare square : squaresToCheck) {
           if (square.isInvalidValue(fromValue)) {
-            int gridCoordY = square.gridFormCoordY;
+            int gridCoordY = square.gridFormY;
             matrix[i][gridCoordY] = "0";
           }
         }
@@ -475,11 +481,11 @@ public class Main {
     for (GridSquare[] gridSquares : grid) {
       for (GridSquare gridSquare : gridSquares) {
         if (gridSquare.getValue().isPresent()
-            && rowForm[gridSquare.rowFormCoordX][gridSquare.rowFormCoordY] == 0) {
+            && rowForm[gridSquare.rowFormX][gridSquare.rowFormY] == 0) {
           int value = gridSquare.getValue().get();
-          rowForm[gridSquare.rowFormCoordX][gridSquare.rowFormCoordY] = value;
-          colForm[gridSquare.colFormCoordX][gridSquare.colFormCoordY] = value;
-          gridForm[gridSquare.gridFormCoordX][gridSquare.gridFormCoordY] = value;
+          rowForm[gridSquare.rowFormX][gridSquare.rowFormY] = value;
+          colForm[gridSquare.colFormX][gridSquare.colFormY] = value;
+          gridForm[gridSquare.gridFormX][gridSquare.gridFormY] = value;
           updateOccurred = true;
         }
       }

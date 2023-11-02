@@ -12,12 +12,12 @@ public class GridSquare {
   private GridSquare above;
   private GridSquare below;
   private final Set<Integer> invalidValues;
-  int rowFormCoordX = -1;
-  int rowFormCoordY = -1;
-  int colFormCoordX = -1;
-  int colFormCoordY = -1;
-  int gridFormCoordX = -1;
-  int gridFormCoordY = -1;
+  int rowFormX = -1;
+  int rowFormY = -1;
+  int colFormX = -1;
+  int colFormY = -1;
+  int gridFormX = -1;
+  int gridFormY = -1;
 
   GridSquare(Integer value) {
 
@@ -41,30 +41,37 @@ public class GridSquare {
     this.invalidValues = invalidSet;
   }
 
+  void setCoordinates(int rowX, int rowY) {
+    setRowFormCoordinate(rowX, rowY);
+    //noinspection SuspiciousNameCombination
+    setColFormCoordinate(rowY, rowX);
+    setGridFormCoordinate(rowY / 3, (rowX % 3) * 3 + (rowY % 3));
+  }
+
   void setRowFormCoordinate(int x, int y) {
-    if (rowFormCoordX == -1) {
-      rowFormCoordX = x;
+    if (rowFormX == -1) {
+      rowFormX = x;
     }
-    if (rowFormCoordY == -1) {
-      rowFormCoordY = y;
+    if (rowFormY == -1) {
+      rowFormY = y;
     }
   }
 
   void setColFormCoordinate(int x, int y) {
-    if (colFormCoordX == -1) {
-      colFormCoordX = x;
+    if (colFormX == -1) {
+      colFormX = x;
     }
-    if (colFormCoordY == -1) {
-      colFormCoordY = y;
+    if (colFormY == -1) {
+      colFormY = y;
     }
   }
 
   void setGridFormCoordinate(int x, int y) {
-    if (gridFormCoordX == -1) {
-      gridFormCoordX = x;
+    if (gridFormX == -1) {
+      gridFormX = x;
     }
-    if (gridFormCoordY == -1) {
-      gridFormCoordY = y;
+    if (gridFormY == -1) {
+      gridFormY = y;
     }
   }
 
@@ -116,6 +123,48 @@ public class GridSquare {
     }
   }
 
+  void addInvalidValues(Set<Integer> invalidValues) {
+    for (int invalidValue : invalidValues) {
+      if (invalidValue == 0) {
+        continue;
+      }
+      if (value != null && value == invalidValue) {
+        continue;
+      }
+      this.invalidValues.add(invalidValue);
+    }
+    if (this.invalidValues.size() > 8) {
+      System.out.println("Oh no");
+    }
+    if (this.invalidValues.size() == 8) {
+      Set<Integer> validValues = new HashSet<>(VALID_INTEGERS);
+      validValues.removeAll(this.invalidValues);
+      validValues.stream().findFirst().ifPresent(validValue -> value = validValue);
+    }
+  }
+
+  boolean addInvalidValuesAndUpdate(Set<Integer> invalidValues) {
+    for (int invalidValue : invalidValues) {
+      if (invalidValue == 0) {
+        continue;
+      }
+      if (value != null && value == invalidValue) {
+        continue;
+      }
+      this.invalidValues.add(invalidValue);
+    }
+    if (this.invalidValues.size() > 8) {
+      System.out.println("Oh no");
+    }
+    if (this.invalidValues.size() == 8 && value == null) {
+      Set<Integer> validValues = new HashSet<>(VALID_INTEGERS);
+      validValues.removeAll(this.invalidValues);
+      validValues.stream().findFirst().ifPresent(validValue -> value = validValue);
+      return true;
+    }
+    return false;
+  }
+
   Optional<Integer> getValue() {
     return Optional.ofNullable(value);
   }
@@ -142,5 +191,9 @@ public class GridSquare {
 
   Set<Integer> getInvalidValues() {
     return invalidValues;
+  }
+
+  public void setValue(Integer value) {
+    this.value = value;
   }
 }
