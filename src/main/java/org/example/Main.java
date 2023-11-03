@@ -23,8 +23,8 @@ public class Main {
     SudokuBoard easyBoard = new SudokuBoard(easyPuzzle);
     easyBoard.print();
 
-//    solveAndPrintPuzzle("EASY PUZZLE", easyPuzzle);
-//
+    //    solveAndPrintPuzzle("EASY PUZZLE", easyPuzzle);
+    //
     int[] masterRow1 = new int[] {9, 0, 0, 0, 5, 0, 0, 6, 0};
     int[] masterRow2 = new int[] {0, 5, 3, 7, 0, 0, 0, 8, 0};
     int[] masterRow3 = new int[] {4, 0, 0, 0, 0, 0, 0, 0, 3};
@@ -34,17 +34,17 @@ public class Main {
     int[] masterRow7 = new int[] {0, 6, 1, 0, 4, 0, 0, 0, 8};
     int[] masterRow8 = new int[] {0, 4, 0, 0, 0, 2, 0, 7, 0};
     int[] masterRow9 = new int[] {3, 0, 0, 0, 0, 0, 0, 0, 0};
-//
-////    int[] masterRow1 = new int[] {9, 0, 8, 3, 5, 4, 0, 6, 0};
-////    int[] masterRow2 = new int[] {2, 5, 3, 7, 0, 6, 0, 8, 0};
-////    int[] masterRow3 = new int[] {4, 0, 6, 0, 2, 0, 0, 0, 3};
-////    int[] masterRow4 = new int[] {6, 9, 4, 0, 0, 0, 8, 0, 0};
-////    int[] masterRow5 = new int[] {7, 8, 5, 2, 6, 0, 0, 0, 1};
-////    int[] masterRow6 = new int[] {1, 3, 2, 4, 0, 0, 6, 0, 0};
-////    int[] masterRow7 = new int[] {5, 6, 1, 9, 4, 7, 0, 0, 8};
-////    int[] masterRow8 = new int[] {8, 4, 9, 0, 3, 2, 0, 7, 0};
-////    int[] masterRow9 = new int[] {3, 2, 7, 0, 0, 0, 0, 0, 0};
-//
+    //
+    ////    int[] masterRow1 = new int[] {9, 0, 8, 3, 5, 4, 0, 6, 0};
+    ////    int[] masterRow2 = new int[] {2, 5, 3, 7, 0, 6, 0, 8, 0};
+    ////    int[] masterRow3 = new int[] {4, 0, 6, 0, 2, 0, 0, 0, 3};
+    ////    int[] masterRow4 = new int[] {6, 9, 4, 0, 0, 0, 8, 0, 0};
+    ////    int[] masterRow5 = new int[] {7, 8, 5, 2, 6, 0, 0, 0, 1};
+    ////    int[] masterRow6 = new int[] {1, 3, 2, 4, 0, 0, 6, 0, 0};
+    ////    int[] masterRow7 = new int[] {5, 6, 1, 9, 4, 7, 0, 0, 8};
+    ////    int[] masterRow8 = new int[] {8, 4, 9, 0, 3, 2, 0, 7, 0};
+    ////    int[] masterRow9 = new int[] {3, 2, 7, 0, 0, 0, 0, 0, 0};
+    //
     int[][] masterPuzzle =
         new int[][] {
           masterRow1,
@@ -60,8 +60,26 @@ public class Main {
 
     SudokuBoard masterBoard = new SudokuBoard(masterPuzzle);
     masterBoard.print();
-//
-//    solveAndPrintPuzzle("MASTER PUZZLE", masterPuzzle);
+
+    int indA = 0;
+    int indB = 3;
+    GridSquare[] squaresA = masterBoard.getAllSquaresInGrid(indA);
+    GridSquare[] squaresB = masterBoard.getAllSquaresInGrid(indB);
+
+    String[][] productAB = MatrixTransformer.computeTransformationMatrix("AB", squaresA, squaresB);
+    printTransformation(productAB, "10");
+
+    String[][] productBA = MatrixTransformer.computeTransformationMatrix("BA", squaresB, squaresA);
+    printTransformation(productBA, "10");
+
+    String[][] transpose = MatrixTransformer.computeMatrixTranspose(productAB);
+    printTransformation(transpose, "10");
+
+    String[][] prod = MatrixTransformer.computeMatrixProduct(productAB, productBA);
+    printTransformation(prod, "50");
+
+    //
+    //    solveAndPrintPuzzle("MASTER PUZZLE", masterPuzzle);
   }
 
   private static void solveAndPrintPuzzle(String puzzleName, int[][] rowForm) {
@@ -176,8 +194,8 @@ public class Main {
 
     // collect values from the product that can be definitively 0 or 1.
     Map<String, String> valMap = new HashMap<>();
-    for (int i = 0 ; i < product.length ; i++) {
-      for (int j = 0 ; j < product.length ; j++) {
+    for (int i = 0; i < product.length; i++) {
+      for (int j = 0; j < product.length; j++) {
         String value = product[i][j];
         if (!"1".equals(value) && !"0".equals(value) && !value.contains("*")) {
           if (i == j) {
@@ -190,8 +208,8 @@ public class Main {
     }
     System.out.println(valMap);
 
-    for (int i = 0 ; i < product.length ; i++) {
-      for (int j = 0 ; j < product.length ; j++) {
+    for (int i = 0; i < product.length; i++) {
+      for (int j = 0; j < product.length; j++) {
         String value = Tab[i][j];
         if (valMap.containsKey(value)) {
           Tab[i][j] = valMap.get(value);
@@ -213,8 +231,8 @@ public class Main {
       }
     }
 
-    for (int i = 0 ; i < product.length ; i++) {
-      for (int j = 0 ; j < product.length ; j++) {
+    for (int i = 0; i < product.length; i++) {
+      for (int j = 0; j < product.length; j++) {
         String value = Tba[i][j];
         if (valMap.containsKey(value)) {
           Tba[i][j] = valMap.get(value);
@@ -294,7 +312,8 @@ public class Main {
       if (toIndex == -1) {
         // iterate through grid squares and check for invalid values
         // need to convert (gridNumB, j) in gridForm -> (row, col)
-        Set<GridSquare> squaresToCheck = Arrays.stream(grid)
+        Set<GridSquare> squaresToCheck =
+            Arrays.stream(grid)
                 .flatMap(Arrays::stream) // Flatten the 2D array to a Stream<GridSquare>
                 .filter(gs -> gs.gridFormX == gridNumB) // Filter by gridCoordX
                 .collect(Collectors.toSet()); // Collect into a Set
@@ -308,8 +327,10 @@ public class Main {
       }
     }
 
-    // if the value in any particular row or column of the transformation matrix is the only non-zero value in that
-    // row or column, then it is a 1. If we update to a 1, then we must also update the row & column it is in
+    // if the value in any particular row or column of the transformation matrix is the only
+    // non-zero value in that
+    // row or column, then it is a 1. If we update to a 1, then we must also update the row & column
+    // it is in
     // to ensure the rest of the values are 0.
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {
@@ -328,7 +349,8 @@ public class Main {
     return matrix;
   }
 
-  // Helper method to check if the current element is the only non-zero element in its row and column
+  // Helper method to check if the current element is the only non-zero element in its row and
+  // column
   private static boolean isOnlyNonZeroInRow(String[][] matrix, int row, int col) {
     for (int i = 0; i < matrix.length; i++) {
       if (i != col && !matrix[row][i].equals("0")) return false;
@@ -336,7 +358,8 @@ public class Main {
     return true;
   }
 
-  // Helper method to check if the current element is the only non-zero element in its row and column
+  // Helper method to check if the current element is the only non-zero element in its row and
+  // column
   private static boolean isOnlyNonZeroInColumn(String[][] matrix, int row, int col) {
     for (int j = 0; j < matrix.length; j++) {
       if (j != row && !matrix[j][col].equals("0")) return false;
@@ -414,7 +437,11 @@ public class Main {
   }
 
   private static void spotInvalidValues(
-      int[][] rowForm, int[][] colForm, int[][] gridForm, GridSquare[][] grid, boolean simplifyPuzzle) {
+      int[][] rowForm,
+      int[][] colForm,
+      int[][] gridForm,
+      GridSquare[][] grid,
+      boolean simplifyPuzzle) {
 
     // set invalid values based on rows
     for (int rowNum = 1; rowNum <= 9; rowNum++) {
@@ -512,17 +539,16 @@ public class Main {
   }
 
   public static void printTransformation(String[][] board, String padding) {
-    for (int i = 0; i < board.length; i++) {
-      if (i % 3 == 0 && i != 0) {
-        System.out.println("------------------+-------------------+-----------------");
-      }
+    for (String[] strings : board) {
       for (int j = 0; j < board[0].length; j++) {
         if (j % 3 == 0 && j != 0) {
           System.out.print("| ");
         }
-        System.out.printf("%-"+ padding +"s ", board[i][j]);  // Ensures each element takes at least 2 spaces
+        System.out.printf(
+            "%-" + padding + "s ", strings[j]); // Ensures each element takes at least 2 spaces
       }
       System.out.println();
     }
+    System.out.println();
   }
 }
