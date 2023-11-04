@@ -112,7 +112,7 @@ public class MatrixTransformer {
       if ("0".equals(a) || "0".equals(b)) return "0";
       if ("1".equals(a)) return b;
       if ("1".equals(b)) return a;
-      return a + "*" + b;
+      return String.format("(%s)*(%s)", a, b);
     }
   }
 

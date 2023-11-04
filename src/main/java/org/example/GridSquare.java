@@ -11,7 +11,7 @@ public class GridSquare {
   private GridSquare right;
   private GridSquare above;
   private GridSquare below;
-  private final Set<Integer> invalidValues;
+  private Set<Integer> invalidValues;
   int rowFormX = -1;
   int rowFormY = -1;
   int colFormX = -1;
@@ -123,26 +123,6 @@ public class GridSquare {
     }
   }
 
-  void addInvalidValues(Set<Integer> invalidValues) {
-    for (int invalidValue : invalidValues) {
-      if (invalidValue == 0) {
-        continue;
-      }
-      if (value != null && value == invalidValue) {
-        continue;
-      }
-      this.invalidValues.add(invalidValue);
-    }
-    if (this.invalidValues.size() > 8) {
-      System.out.println("Oh no");
-    }
-    if (this.invalidValues.size() == 8) {
-      Set<Integer> validValues = new HashSet<>(VALID_INTEGERS);
-      validValues.removeAll(this.invalidValues);
-      validValues.stream().findFirst().ifPresent(validValue -> value = validValue);
-    }
-  }
-
   boolean addInvalidValuesAndUpdate(Set<Integer> invalidValues) {
     for (int invalidValue : invalidValues) {
       if (invalidValue == 0) {
@@ -195,5 +175,8 @@ public class GridSquare {
 
   public void setValue(Integer value) {
     this.value = value;
+    Set<Integer> invalid = new HashSet<>(VALID_INTEGERS);
+    invalid.remove(value);
+    invalidValues = invalid;
   }
 }

@@ -1,8 +1,5 @@
 package org.example;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class SudokuBoard {
   static final int SIZE = 9; // Standard Sudoku size
   private final GridSquare[][] board;
@@ -10,14 +7,13 @@ public class SudokuBoard {
   public SudokuBoard(int[][] initialValues) {
     this.board = new GridSquare[SIZE][SIZE];
     initializeBoard(initialValues);
-    simplifyBoard();
+    BoardReducer.basicReduce(this);
   }
 
   private void initializeBoard(int[][] initialValues) {
     if (initialValues.length != SIZE || initialValues[0].length != SIZE) {
       throw new IllegalArgumentException("Initial values must be a 9x9 matrix.");
     }
-
     for (int i = 0; i < SIZE; i++) {
       for (int j = 0; j < SIZE; j++) {
         int initialValue = initialValues[i][j];
@@ -26,36 +22,6 @@ public class SudokuBoard {
         this.board[i][j] = gridSquare;
       }
     }
-  }
-
-  public void simplifyBoard() {
-    boolean updateOccurred = false;
-    for (int i = 0; i < SIZE; i++) {
-      boolean squareInRowUpdated = setInvalidValues(getAllSquaresInRow(i));
-      boolean squareInColUpdated = setInvalidValues(getAllSquaresInColumn(i));
-      boolean squareInGridUpdated = setInvalidValues(getAllSquaresInGrid(i));
-      if (!updateOccurred && (squareInRowUpdated || squareInColUpdated || squareInGridUpdated)) {
-        updateOccurred = true;
-      }
-    }
-    if (updateOccurred) {
-      simplifyBoard();
-    }
-  }
-
-  private boolean setInvalidValues(GridSquare[] squares) {
-    boolean updateOccurred = false;
-    Set<Integer> invalidValues = new HashSet<>();
-    for (GridSquare square : squares) {
-      square.getValue().ifPresent(invalidValues::add);
-    }
-    for (GridSquare square : squares) {
-      boolean squareDidUpdate = square.addInvalidValuesAndUpdate(invalidValues);
-      if (!updateOccurred && squareDidUpdate) {
-        updateOccurred = true;
-      }
-    }
-    return updateOccurred;
   }
 
   GridSquare[] getAllSquaresInRow(int row) {
