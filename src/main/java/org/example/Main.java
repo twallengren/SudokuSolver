@@ -8,14 +8,27 @@ public class Main {
     // 4x4 study
     // 1. Generate all possible 4x4 boards via permutations
     // 2. Figure out which boards are isomorphic to others via symmetries
-    Board board = new FourByFourBoardImpl();
+    Board initBoard = new FourByFourBoardImpl();
 
-    board.print();
-    List<Permutation> permutations = board.computePossiblePermutationsToNextRow(0);
-    board.applyPermutationToRow(0, permutations.get(0));
-    board.print();
-    permutations = board.computePossiblePermutationsToNextRow(1);
-    board.applyPermutationToRow(1, permutations.get(0));
-    board.print();
+    List<Board> boards = new ArrayList<>();
+    List<Permutation> rowZeroPermutations = initBoard.computePossiblePermutationsToNextRow(0);
+    for (Permutation rowZeroPermutation : rowZeroPermutations) {
+      Board board = new FourByFourBoardImpl();
+      board.applyPermutationToRow(0, rowZeroPermutation);
+      List<Permutation> rowOnePermutations = board.computePossiblePermutationsToNextRow(1);
+      for (Permutation rowOnePermutation : rowOnePermutations) {
+        board = new FourByFourBoardImpl();
+        board.applyPermutationToRow(0, rowZeroPermutation);
+        board.applyPermutationToRow(1, rowOnePermutation);
+        List<Permutation> rowTwoPermutations = board.computePossiblePermutationsToNextRow(2);
+        for (Permutation rowTwoPermutation : rowTwoPermutations) {
+          board = new FourByFourBoardImpl();
+          board.applyPermutationToRow(0, rowZeroPermutation);
+          board.applyPermutationToRow(1, rowOnePermutation);
+          board.applyPermutationToRow(2, rowTwoPermutation);
+          board.print();
+        }
+      }
+    }
   }
 }
