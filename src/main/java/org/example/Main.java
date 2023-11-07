@@ -27,6 +27,7 @@ public class Main {
           board.applyPermutationToRow(1, rowOnePermutation);
           board.applyPermutationToRow(2, rowTwoPermutation);
           board.print();
+          boards.add(board);
         }
       }
     }
