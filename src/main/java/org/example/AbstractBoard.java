@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AbstractBoard implements Board {
@@ -47,7 +48,16 @@ public class AbstractBoard implements Board {
 
   @Override
   public boolean isValidPermutation(int[] permutation, int rowNumber) {
-    return false;
+    Square[] squaresInRow = squares[rowNumber];
+    for (int index = 0; index < size; index++) {
+      Square squareToMove = squaresInRow[index];
+      int newLocation = permutation[index];
+      Square[] squaresInColumn = getSquaresInColumn(newLocation);
+      if (Arrays.stream(squaresInColumn).anyMatch(sq -> sq == squareToMove)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override
