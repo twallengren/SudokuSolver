@@ -6,6 +6,18 @@ import java.util.function.Predicate;
 
 public record Permutation(int[] elements) {
 
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < elements.length; i++) {
+      sb.append(elements[i]);
+      if (i < elements.length - 1) {
+        sb.append(","); // Use comma as delimiter
+      }
+    }
+    return sb.toString();
+  }
+
   public static List<Permutation> generatePermutations(
       int n, int[] array, List<Permutation> permutations, Predicate<int[]> predicate) {
     if (n == 1) {
