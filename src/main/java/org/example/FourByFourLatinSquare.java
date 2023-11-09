@@ -1,7 +1,7 @@
 package org.example;
 
-public class FourByFourLatinSquare extends AbstractBoard {
-    FourByFourLatinSquare() {
-        super(4);
-    }
+public final class FourByFourLatinSquare extends AbstractBoard {
+  FourByFourLatinSquare() {
+    super(4);
+  }
 }

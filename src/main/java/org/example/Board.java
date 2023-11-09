@@ -11,4 +11,20 @@ public interface Board {
   boolean isValidPermutation(int[] permutation, int rowNumber);
 
   void print();
+
+  void swapRows(int rowNumberA, int rowNumberB);
+
+  void swapColumns(int colNumberA, int colNumberB);
+
+  void rotateCounterclockwise();
+
+  void transposeBoard();
+
+  void verticalReflection();
+
+  void horizontalReflection();
+
+  void recomputePermutations();
+
+  Set<PermutationChain> getEquivalentPermutationChains();
 }

@@ -1,6 +1,6 @@
 package org.example;
 
-public class FourByFourSudokuBoard extends AbstractBoard {
+public final class FourByFourSudokuBoard extends AbstractBoard {
 
   FourByFourSudokuBoard() {
     super(4);

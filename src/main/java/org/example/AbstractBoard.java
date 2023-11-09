@@ -1,17 +1,19 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class AbstractBoard implements Board {
 
   int size;
   Square[][] squares;
+  PermutationChain currentPermutationChain;
+  Set<PermutationChain> equivalentPermutationChains;
 
   AbstractBoard(int size) {
     this.size = size;
     squares = getInitialSquares(size);
+    currentPermutationChain = new PermutationChain(size);
+    equivalentPermutationChains = new HashSet<>();
   }
 
   private static Square[][] getInitialSquares(int size) {
@@ -34,6 +36,11 @@ public class AbstractBoard implements Board {
       permutedSquares[newLocation] = rowA[index];
     }
     squares[rowNumber + 1] = permutedSquares;
+    currentPermutationChain.addPermutation(permutation);
+    if (currentPermutationChain.isFull()) {
+      PermutationChain permutationChain = new PermutationChain(currentPermutationChain);
+      equivalentPermutationChains.add(permutationChain);
+    }
   }
 
   @Override
@@ -81,11 +88,115 @@ public class AbstractBoard implements Board {
     System.out.println();
   }
 
+  @Override
+  public void swapRows(int rowNumberA, int rowNumberB) {
+    Square[] rowA = squares[rowNumberA];
+    Square[] rowB = squares[rowNumberB];
+    squares[rowNumberA] = rowB;
+    squares[rowNumberB] = rowA;
+    recomputePermutations();
+  }
+
+  @Override
+  public void swapColumns(int colNumberA, int colNumberB) {
+    for (int row = 0; row < size; row++) {
+      Square squareA = squares[row][colNumberA];
+      Square squareB = squares[row][colNumberB];
+      squares[row][colNumberA] = squareB;
+      squares[row][colNumberB] = squareA;
+    }
+    recomputePermutations();
+  }
+
+  @Override
+  public void rotateCounterclockwise() {
+    transposeBoard();
+    verticalReflection();
+    recomputePermutations();
+  }
+
+  @Override
+  public void transposeBoard() {
+    for (int i = 0; i < size; i++) {
+      for (int j = i; j < size; j++) {
+        Square temp = squares[i][j];
+        squares[i][j] = squares[j][i];
+        squares[j][i] = temp;
+      }
+    }
+    recomputePermutations();
+  }
+
+  @Override
+  public void verticalReflection() {
+    for (int j = 0; j < size; j++) {
+      for (int i = 0; i < size / 2; i++) {
+        Square temp = squares[i][j];
+        squares[i][j] = squares[size - 1 - i][j];
+        squares[size - 1 - i][j] = temp;
+      }
+    }
+    recomputePermutations();
+  }
+
+  @Override
+  public void horizontalReflection() {
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size / 2; j++) {
+        Square temp = squares[i][j];
+        squares[i][j] = squares[i][size - 1 - j];
+        squares[i][size - 1 - j] = temp;
+      }
+    }
+    recomputePermutations();
+  }
+
+  @Override
+  public void recomputePermutations() {
+    for (int row = 0; row < size - 1; row++) {
+      int[] elements = new int[size];
+      Square[] rowA = squares[row];
+      Square[] rowB = squares[row + 1];
+      for (int col = 0; col < size; col++) {
+        Square squareA = rowA[col];
+        for (int index = 0; index < size; index++) {
+          Square squareB = rowB[index];
+          if (squareA == squareB) {
+            elements[col] = index;
+            break;
+          }
+        }
+      }
+      Permutation permutation = new Permutation(elements);
+      currentPermutationChain.setPermutation(row, permutation);
+    }
+    equivalentPermutationChains.add(new PermutationChain(currentPermutationChain));
+  }
+
   Square[] getSquaresInColumn(int colNumber) {
     Square[] column = new Square[size];
     for (int index = 0; index < size; index++) {
       column[index] = squares[index][colNumber];
     }
     return column;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    AbstractBoard that = (AbstractBoard) o;
+    return size == that.size
+        && equivalentPermutationChains.equals(that.equivalentPermutationChains);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(size, equivalentPermutationChains);
+  }
+
+  @Override
+  public Set<PermutationChain> getEquivalentPermutationChains() {
+    return new HashSet<>(equivalentPermutationChains);
   }
 }
