@@ -36,20 +36,20 @@ public class Main {
       Thread.currentThread().interrupt(); // set the interrupt flag
     } finally {
       executorService.shutdown(); // Initiate shutdown
-      try {
-        if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
-          executorService.shutdownNow(); // Cancel currently executing tasks
-          // Wait a while for tasks to respond to being cancelled
-          if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
-            System.err.println("Executor did not terminate");
-          }
-        }
-      } catch (InterruptedException ie) {
-        // (Re-)Cancel if current thread also interrupted
-        executorService.shutdownNow();
-        // Preserve interrupt status
-        Thread.currentThread().interrupt();
-      }
+//      try {
+//        if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+//          executorService.shutdownNow(); // Cancel currently executing tasks
+//          // Wait a while for tasks to respond to being cancelled
+//          if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+//            System.err.println("Executor did not terminate");
+//          }
+//        }
+//      } catch (InterruptedException ie) {
+//        // (Re-)Cancel if current thread also interrupted
+//        executorService.shutdownNow();
+//        // Preserve interrupt status
+//        Thread.currentThread().interrupt();
+//      }
     }
 
 
