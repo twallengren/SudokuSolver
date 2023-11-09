@@ -8,6 +8,9 @@ public interface Board {
 
   List<Permutation> computePossiblePermutationsToNextRow(int rowNumber);
 
+  List<Permutation> computePossiblePermutationsToNextRow(
+      List<Permutation> permutations, int rowNumber);
+
   boolean isValidPermutation(int[] permutation, int rowNumber);
 
   void print();
@@ -27,4 +30,6 @@ public interface Board {
   void recomputePermutations();
 
   Set<PermutationChain> getEquivalentPermutationChains();
+
+  int size();
 }

@@ -23,7 +23,7 @@ public record Permutation(int[] elements) {
     if (n == 1) {
       // Check if the current permutation satisfies the predicate
       if (predicate.test(array)) {
-        // If it does, add it to the list of valid permutations
+        // If it does, add it to the list of valid validPermutations
         permutations.add(new Permutation(array.clone()));
       }
     } else {

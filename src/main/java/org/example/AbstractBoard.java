@@ -54,6 +54,12 @@ public class AbstractBoard implements Board {
   }
 
   @Override
+  public List<Permutation> computePossiblePermutationsToNextRow(
+      List<Permutation> permutations, int rowNumber) {
+    return permutations.stream().filter(p -> isValidPermutation(p.elements(), rowNumber)).toList();
+  }
+
+  @Override
   public boolean isValidPermutation(int[] permutation, int rowNumber) {
     Square[] squaresInRow = squares[rowNumber];
     for (int index = 0; index < size; index++) {
@@ -198,5 +204,10 @@ public class AbstractBoard implements Board {
   @Override
   public Set<PermutationChain> getEquivalentPermutationChains() {
     return new HashSet<>(equivalentPermutationChains);
+  }
+
+  @Override
+  public int size() {
+    return size;
   }
 }

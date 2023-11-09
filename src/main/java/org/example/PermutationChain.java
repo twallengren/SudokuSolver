@@ -27,6 +27,9 @@ public class PermutationChain {
   }
 
   void setPermutation(int index, Permutation permutation) {
+    if (index >= permutations.size()) {
+      throw new IllegalArgumentException("Invalid index");
+    }
     permutations.set(index, permutation);
   }
 
