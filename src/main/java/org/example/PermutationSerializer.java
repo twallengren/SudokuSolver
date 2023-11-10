@@ -3,6 +3,7 @@ package org.example;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public final class PermutationSerializer {
@@ -33,5 +34,15 @@ public final class PermutationSerializer {
       }
     }
     return permutations;
+  }
+
+  public static void serializePermutationChains(
+      Set<PermutationChain> permutationChains, String filename) throws IOException {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+      for (PermutationChain permutationChain : permutationChains) {
+        writer.write(permutationChain.toString());
+        writer.newLine(); // Write each permutation on a new line
+      }
+    }
   }
 }

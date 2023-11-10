@@ -61,4 +61,13 @@ public class PermutationChain {
     }
     return result;
   }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    for (Permutation permutation : permutations) {
+      sb.append(permutation.toCycleNotation()).append("\n");
+    }
+    return sb.toString();
+  }
 }

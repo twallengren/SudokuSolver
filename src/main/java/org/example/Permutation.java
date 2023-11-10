@@ -1,22 +1,12 @@
 package org.example;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public record Permutation(int[] elements) {
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < elements.length; i++) {
-      sb.append(elements[i]);
-      if (i < elements.length - 1) {
-        sb.append(","); // Use comma as delimiter
-      }
-    }
-    return sb.toString();
-  }
 
   public static List<Permutation> generatePermutations(
       int n, int[] array, List<Permutation> permutations, Predicate<int[]> predicate) {
@@ -40,6 +30,32 @@ public record Permutation(int[] elements) {
     return permutations;
   }
 
+  public String toCycleNotation() {
+    Set<Integer> nodesVisited = new HashSet<>();
+    StringBuilder sb = new StringBuilder();
+    while (nodesVisited.size() < elements.length) {
+      sb.append("(");
+      int node = pickUnvisitedNode(nodesVisited);
+      while (!nodesVisited.contains(node)) {
+        nodesVisited.add(node);
+        sb.append(node);
+        node = elements[node];
+      }
+      sb.append(")");
+    }
+    return sb.toString();
+  }
+
+  private int pickUnvisitedNode(Set<Integer> nodesVisited) {
+    for (int node = 0; node < elements.length; node++) {
+      if (nodesVisited.contains(node)) {
+        continue;
+      }
+      return node;
+    }
+    throw new RuntimeException("All nodes visited");
+  }
+
   // Method to swap elements in an array
   private static void swap(int[] array, int a, int b) {
     int temp = array[a];
@@ -58,5 +74,17 @@ public record Permutation(int[] elements) {
   @Override
   public int hashCode() {
     return Arrays.hashCode(elements);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < elements.length; i++) {
+      sb.append(elements[i]);
+      if (i < elements.length - 1) {
+        sb.append(","); // Use comma as delimiter
+      }
+    }
+    return sb.toString();
   }
 }

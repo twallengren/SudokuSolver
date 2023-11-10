@@ -118,7 +118,6 @@ public class AbstractBoard implements Board {
   public void rotateCounterclockwise() {
     transposeBoard();
     verticalReflection();
-    recomputePermutations();
   }
 
   @Override

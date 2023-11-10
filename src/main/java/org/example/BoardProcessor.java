@@ -63,9 +63,9 @@ public class BoardProcessor {
   private void performTransformations(Board board) {
     board.rotateCounterclockwise();
     performRowAndColumnSwaps(board);
-    board.verticalReflection();
+    board.rotateCounterclockwise();
     performRowAndColumnSwaps(board);
-    board.horizontalReflection();
+    board.rotateCounterclockwise();
     performRowAndColumnSwaps(board);
     performRowAndColumnSwaps(board);
   }
