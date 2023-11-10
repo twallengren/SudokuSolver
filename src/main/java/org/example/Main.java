@@ -7,15 +7,13 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
 
-    Board initBoard = new FourByFourLatinSquare();
+    Board initBoard = new FiveByFiveLatinSquare();
     List<Permutation> permutations =
         PermutationSerializer.deserializeFromFile(
-            Constants.RESOURCES_DIRECTORY_PATH + "fourbyfourderangements.txt");
-
-    System.out.println("test");
+            Constants.RESOURCES_DIRECTORY_PATH + "fivebyfivederangements.txt");
 
     BoardProcessor boardProcessor =
-        new BoardProcessor(initBoard, permutations, FourByFourLatinSquare::new);
+        new BoardProcessor(initBoard, permutations, FiveByFiveLatinSquare::new);
     List<Permutation> rowZeroPermutations =
         initBoard.computePossiblePermutationsToNextRow(permutations, 0);
     Set<Board> boards = new HashSet<>();
@@ -56,7 +54,7 @@ public class Main {
     for (Board board : boards) {
       String filename =
           Constants.RESOURCES_DIRECTORY_PATH
-              + "fourbyfour_latinsquare_"
+              + "fivebyfive_latinsquare_"
               + "board"
               + index
               + "_permutationchains.txt";
