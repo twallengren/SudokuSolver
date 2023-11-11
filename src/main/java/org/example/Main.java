@@ -1,19 +1,26 @@
 package org.example;
 
-import java.util.*;
-import java.util.concurrent.*;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Main {
 
   public static void main(String[] args) throws Exception {
 
-    Board initBoard = new FiveByFiveLatinSquare();
+    Board initBoard = new SixBySixLatinSquare();
+
     List<Permutation> permutations =
         PermutationSerializer.deserializeFromFile(
-            Constants.RESOURCES_DIRECTORY_PATH + "fivebyfivederangements.txt");
+            Constants.RESOURCES_DIRECTORY_PATH + "sixbysixderangements.txt");
 
     BoardProcessor boardProcessor =
-        new BoardProcessor(initBoard, permutations, FiveByFiveLatinSquare::new);
+        new BoardProcessor(initBoard, permutations, SixBySixLatinSquare::new);
     List<Permutation> rowZeroPermutations =
         initBoard.computePossiblePermutationsToNextRow(permutations, 0);
     Set<Board> boards = new HashSet<>();
@@ -54,7 +61,7 @@ public class Main {
     for (Board board : boards) {
       String filename =
           Constants.RESOURCES_DIRECTORY_PATH
-              + "fivebyfive_latinsquare_"
+              + "sixbysix_latinsquare_"
               + "board"
               + index
               + "_permutationchains.txt";
