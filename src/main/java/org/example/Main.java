@@ -12,14 +12,14 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
 
-    Board initBoard = new SixBySixLatinSquare();
+    Board initBoard = new FiveByFiveLatinSquare();
 
     List<Permutation> permutations =
         PermutationSerializer.deserializeFromFile(
-            Constants.RESOURCES_DIRECTORY_PATH + "sixbysixderangements.txt");
+            Constants.RESOURCES_DIRECTORY_PATH + "fivebyfivederangements.txt");
 
     BoardProcessor boardProcessor =
-        new BoardProcessor(initBoard, permutations, SixBySixLatinSquare::new);
+        new BoardProcessor(initBoard, permutations, FiveByFiveLatinSquare::new);
     List<Permutation> rowZeroPermutations =
         initBoard.computePossiblePermutationsToNextRow(permutations, 0);
     Set<Board> boards = new HashSet<>();
