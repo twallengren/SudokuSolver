@@ -7,13 +7,13 @@ import java.util.List;
 /**
  * An element of the symmetric group S_n, stored in one-line notation.
  *
- * <p>A permutation is a bijection on {@code {0, 1, ..., n-1}}. The value {@code imageOf(i)} is where
- * index {@code i} is sent. Instances are immutable.
+ * <p>A permutation is a bijection on {@code {0, 1, ..., n-1}}. The value {@code imageOf(i)} is
+ * where index {@code i} is sent. Instances are immutable.
  *
- * <p>The central operation for this project is {@link #apply(int[])}: a permutation acts on a row of
- * a square by moving the entry at index {@code i} to index {@code imageOf(i)}. Applying {@code p}
- * and then {@code q} is the same as applying {@code p.andThen(q)}, which is what lets a Latin square
- * be described as a sequence of permutations.
+ * <p>The central operation for this project is {@link #apply(int[])}: a permutation acts on a row
+ * of a square by moving the entry at index {@code i} to index {@code imageOf(i)}. Applying {@code
+ * p} and then {@code q} is the same as applying {@code p.andThen(q)}, which is what lets a Latin
+ * square be described as a sequence of permutations.
  */
 public final class Permutation {
 
@@ -235,8 +235,7 @@ public final class Permutation {
 
   private void requireSameSize(Permutation other) {
     if (other.mapping.length != mapping.length) {
-      throw new IllegalArgumentException(
-          "Size mismatch: " + size() + " and " + other.size());
+      throw new IllegalArgumentException("Size mismatch: " + size() + " and " + other.size());
     }
   }
 

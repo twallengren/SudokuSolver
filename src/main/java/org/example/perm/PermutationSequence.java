@@ -9,8 +9,8 @@ import java.util.Objects;
  * An ordered sequence of permutations, read as the steps that carry each row of a square to the
  * next.
  *
- * <p>This is the view the playground is built around. A square of order {@code n} is a base row plus
- * {@code n - 1} steps. The square is Latin exactly when every <em>gap</em> composition {@link
+ * <p>This is the view the playground is built around. A square of order {@code n} is a base row
+ * plus {@code n - 1} steps. The square is Latin exactly when every <em>gap</em> composition {@link
  * #between(int, int)} is a derangement: two rows may share no symbol in any column, and the
  * permutation carrying one row to the other is precisely what would have to fix a point for that to
  * happen.
@@ -38,7 +38,10 @@ public final class PermutationSequence {
       Objects.requireNonNull(step, "step");
       if (step.size() != order) {
         throw new IllegalArgumentException(
-            "All steps must act on the same number of points; found " + order + " and " + step.size());
+            "All steps must act on the same number of points; found "
+                + order
+                + " and "
+                + step.size());
       }
     }
     return new PermutationSequence(List.copyOf(steps), order);
@@ -96,8 +99,8 @@ public final class PermutationSequence {
   }
 
   /**
-   * Whether every gap composition is a derangement. This is exactly the condition for a square built
-   * from this sequence to be Latin.
+   * Whether every gap composition is a derangement. This is exactly the condition for a square
+   * built from this sequence to be Latin.
    */
   public boolean isLatin() {
     for (int from = 0; from <= steps.size(); from++) {

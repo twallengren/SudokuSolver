@@ -68,7 +68,8 @@ class PermutationSequenceTest {
 
   @Test
   void identityStepIsNeverLatin() {
-    PermutationSequence sequence = PermutationSequence.of(Permutation.identity(3), Permutation.of(1, 2, 0));
+    PermutationSequence sequence =
+        PermutationSequence.of(Permutation.identity(3), Permutation.of(1, 2, 0));
     assertFalse(sequence.allStepsAreDerangements());
     assertFalse(sequence.isLatin());
   }

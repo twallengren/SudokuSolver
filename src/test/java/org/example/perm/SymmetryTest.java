@@ -78,8 +78,7 @@ class SymmetryTest {
   void rotatingClockwiseIsTransposeThenHorizontalReflection() {
     LatinSquare square = sample();
     assertEquals(
-        Symmetry.rotateClockwise(square),
-        Symmetry.reflectHorizontally(Symmetry.transpose(square)));
+        Symmetry.rotateClockwise(square), Symmetry.reflectHorizontally(Symmetry.transpose(square)));
   }
 
   @Test

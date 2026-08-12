@@ -180,8 +180,9 @@ public final class LatinSquare {
   }
 
   /**
-   * Recovers the sequence of row-to-row steps. Feeding the result back to {@link #fromSequence(int[],
-   * PermutationSequence)} together with {@link #row(int) row(0)} reproduces this square.
+   * Recovers the sequence of row-to-row steps. Feeding the result back to {@link
+   * #fromSequence(int[], PermutationSequence)} together with {@link #row(int) row(0)} reproduces
+   * this square.
    *
    * @throws IllegalStateException if the rows are not all permutations of the same symbols
    */

@@ -131,7 +131,8 @@ class PermutationTest {
 
   @Test
   void buildsFromCycles() {
-    assertEquals(Permutation.of(4, 2, 3, 0, 1), Permutation.fromCycles(5, new int[] {0, 4, 1, 2, 3}));
+    assertEquals(
+        Permutation.of(4, 2, 3, 0, 1), Permutation.fromCycles(5, new int[] {0, 4, 1, 2, 3}));
     assertTrue(Permutation.fromCycles(3).isIdentity());
     assertThrows(
         IllegalArgumentException.class,

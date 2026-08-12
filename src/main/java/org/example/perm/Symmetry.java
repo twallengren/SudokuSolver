@@ -148,7 +148,8 @@ public final class Symmetry {
 
   private static Permutation transposition(int n, int a, int b) {
     if (a < 0 || a >= n || b < 0 || b >= n) {
-      throw new IndexOutOfBoundsException("Indices " + a + " and " + b + " must be within 0.." + (n - 1));
+      throw new IndexOutOfBoundsException(
+          "Indices " + a + " and " + b + " must be within 0.." + (n - 1));
     }
     int[] mapping = Permutation.identity(n).toArray();
     mapping[a] = b;
