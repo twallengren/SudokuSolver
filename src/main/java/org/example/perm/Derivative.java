@@ -1,8 +1,11 @@
 package org.example.perm;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 
@@ -133,6 +136,67 @@ public final class Derivative {
       current = apply(current, wrap, quotient);
     }
     return OptionalInt.empty();
+  }
+
+  /**
+   * The shape of a D-orbit. Because the state space is finite the orbit is eventually periodic, so
+   * it consists of a tail of length {@code tail} leading into a cycle of length {@code period}.
+   *
+   * <p>Reaching the constant identity is the special case {@code period == 1} at that fixed point,
+   * and then {@code tail} is exactly the order in the sense of {@link #order}. Everything else ends
+   * in a longer cycle, which is what makes {@code period} the natural generalisation of order.
+   */
+  public record Spectrum(int tail, int period, boolean reachesIdentity) {
+
+    public Spectrum {
+      if (tail < 0 || period < 1) {
+        throw new IllegalArgumentException("Invalid spectrum: tail=" + tail + " period=" + period);
+      }
+    }
+
+    /** The number of distinct states in the orbit. */
+    public int visited() {
+      return tail + period;
+    }
+
+    @Override
+    public String toString() {
+      return reachesIdentity
+          ? "order " + tail + " (identity)"
+          : "tail " + tail + ", cycle " + period;
+    }
+  }
+
+  /**
+   * The shape of the orbit of {@code sequence} under D, or empty if it is still neither periodic
+   * nor exhausted after {@code limit} applications.
+   */
+  public static Optional<Spectrum> spectrum(
+      PermutationSequence sequence, Wrap wrap, Quotient quotient, int limit) {
+    if (limit < 0) {
+      throw new IllegalArgumentException("limit must be non-negative, got " + limit);
+    }
+    Map<PermutationSequence, Integer> firstSeenAt = new HashMap<>();
+    PermutationSequence current = sequence;
+    for (int step = 0; step <= limit; step++) {
+      Integer previous = firstSeenAt.putIfAbsent(current, step);
+      if (previous != null) {
+        int period = step - previous;
+        return Optional.of(
+            new Spectrum(previous, period, period == 1 && isConstantIdentity(current)));
+      }
+      if (!canApply(current, wrap)) {
+        return Optional.empty();
+      }
+      current = apply(current, wrap, quotient);
+    }
+    return Optional.empty();
+  }
+
+  /** The shape of the orbit under D, using {@link #DEFAULT_LIMIT}. */
+  public static Optional<Spectrum> spectrum(
+      PermutationSequence sequence, Wrap wrap, Quotient quotient) {
+    return spectrum(sequence, wrap, quotient, DEFAULT_LIMIT);
   }
 
   private static boolean canApply(PermutationSequence sequence, Wrap wrap) {
