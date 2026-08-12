@@ -194,6 +194,21 @@ public final class LatinSquare {
     return PermutationSequence.of(steps);
   }
 
+  /**
+   * The rows themselves as a sequence of permutations, each mapping a column index to the symbol it
+   * holds. Unlike {@link #toSequence()} this keeps all {@code n} rows rather than the {@code n - 1}
+   * steps between them, which is the natural starting point for iterating a difference operator.
+   *
+   * @throws IllegalArgumentException if some row is not a permutation of {@code 0..n-1}
+   */
+  public PermutationSequence rowsAsSequence() {
+    List<Permutation> rows = new ArrayList<>();
+    for (int[] row : grid) {
+      rows.add(Permutation.of(row));
+    }
+    return PermutationSequence.of(rows);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
