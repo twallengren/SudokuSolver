@@ -80,14 +80,66 @@ public final class LatinSquares {
   /** Every reduced Latin square of order {@code n} — first row and first column both natural. */
   public static List<LatinSquare> reduced(int n) {
     List<LatinSquare> squares = new ArrayList<>();
-    forEachWithNaturalFirstRow(
-        n,
-        square -> {
-          if (square.isReduced()) {
-            squares.add(square);
-          }
-        });
+    forEachReduced(n, squares::add);
     return squares;
+  }
+
+  /**
+   * Visits every reduced Latin square of order {@code n}, constraining the first column during the
+   * search rather than filtering afterwards.
+   *
+   * <p>The difference matters past order 6: there are 16,942,080 reduced squares of order 7 but
+   * 12,198,297,600 with merely the natural first row, so filtering would walk a thousand times more
+   * ground than it keeps.
+   */
+  public static void forEachReduced(int n, Consumer<LatinSquare> consumer) {
+    if (n < 1) {
+      throw new IllegalArgumentException("Order must be at least 1, got " + n);
+    }
+    int[][] grid = new int[n][n];
+    int[] columnMasks = new int[n];
+    for (int column = 0; column < n; column++) {
+      grid[0][column] = column;
+      columnMasks[column] = 1 << column;
+    }
+    if (n == 1) {
+      consumer.accept(LatinSquare.fromGrid(grid));
+      return;
+    }
+    // The first column is forced to 0, 1, ..., n-1 as well.
+    for (int row = 1; row < n; row++) {
+      grid[row][0] = row;
+      columnMasks[0] |= 1 << row;
+    }
+    fillReduced(grid, columnMasks, 1, 1, 1 << 1, consumer);
+  }
+
+  private static void fillReduced(
+      int[][] grid,
+      int[] columnMasks,
+      int row,
+      int column,
+      int rowMask,
+      Consumer<LatinSquare> consumer) {
+    int n = grid.length;
+    if (column == n) {
+      if (row == n - 1) {
+        consumer.accept(LatinSquare.fromGrid(grid));
+        return;
+      }
+      fillReduced(grid, columnMasks, row + 1, 1, 1 << (row + 1), consumer);
+      return;
+    }
+    for (int symbol = 0; symbol < n; symbol++) {
+      int bit = 1 << symbol;
+      if ((rowMask & bit) != 0 || (columnMasks[column] & bit) != 0) {
+        continue;
+      }
+      grid[row][column] = symbol;
+      columnMasks[column] |= bit;
+      fillReduced(grid, columnMasks, row, column + 1, rowMask | bit, consumer);
+      columnMasks[column] &= ~bit;
+    }
   }
 
   /**
@@ -121,13 +173,7 @@ public final class LatinSquares {
   /** The number of reduced Latin squares of order {@code n}. */
   public static long countReduced(int n) {
     long[] count = {0};
-    forEachWithNaturalFirstRow(
-        n,
-        square -> {
-          if (square.isReduced()) {
-            count[0]++;
-          }
-        });
+    forEachReduced(n, square -> count[0]++);
     return count[0];
   }
 }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.example.explore.LatinSquares;
 import org.example.explore.Permutations;
+import org.example.perm.Isotopy;
 import org.example.perm.LatinSquare;
 import org.example.perm.Permutation;
 import org.example.perm.PermutationSequence;
@@ -25,6 +26,7 @@ public final class Playground {
 
   private final PrintStream out;
   private LatinSquare current;
+  private LatinSquare stashed;
 
   Playground(PrintStream out) {
     this.out = out;
@@ -97,6 +99,12 @@ public final class Playground {
                 Symmetry.relabelSymbols(
                     require(), parsePermutation(requireOne(rest, "relabel <permutation>"))));
         case "reduce" -> replace(Symmetry.toReduced(require()));
+        case "stash" -> {
+          stashed = require();
+          out.println("stashed the current square");
+        }
+        case "canonical" -> out.println(Isotopy.canonical(require()));
+        case "isotopic" -> compareWithStash();
         case "sudoku" -> showSudoku();
         case "count" -> count(rest);
         case "list" -> list(rest);
@@ -138,6 +146,9 @@ public final class Playground {
           swapcols <a> <b>         exchange two columns
           relabel <p>              rename the symbols
           reduce                   canonical form: first row and column in natural order
+          canonical                the least grid isotopic to this one
+          stash                    remember the current square for comparison
+          isotopic                 is the current square isotopic to the stashed one?
 
         Counting and enumerating
           count squares <n>        the number of Latin squares of order n
@@ -282,6 +293,21 @@ public final class Playground {
           case "v" -> Symmetry.reflectVertically(require());
           default -> throw new IllegalArgumentException("usage: reflect [h|v]");
         });
+  }
+
+  /** Decides isotopy between the stashed square and the current one. */
+  private void compareWithStash() {
+    LatinSquare square = require();
+    if (stashed == null) {
+      throw new IllegalStateException(
+          "Nothing stashed. Build a square, run 'stash', then build another.");
+    }
+    if (stashed.order() != square.order()) {
+      out.println("different orders, so neither isotopic nor in the same main class");
+      return;
+    }
+    out.println("same isotopy class: " + yesNo(Isotopy.sameIsotopyClass(stashed, square)));
+    out.println("same main class:    " + yesNo(Isotopy.sameMainClass(stashed, square)));
   }
 
   private void showSudoku() {

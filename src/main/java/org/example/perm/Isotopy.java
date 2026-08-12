@@ -19,6 +19,22 @@ public final class Isotopy {
 
   private Isotopy() {}
 
+  /**
+   * Whether two squares are isotopic — whether one can be turned into the other by independently
+   * permuting rows, columns and symbols.
+   *
+   * <p>This is a decision, not a search: both are reduced to their canonical form and compared, so
+   * the answer is exact rather than a failure to find a transformation.
+   */
+  public static boolean sameIsotopyClass(LatinSquare a, LatinSquare b) {
+    return a.order() == b.order() && canonical(a).equals(canonical(b));
+  }
+
+  /** Whether two squares are in the same main class, allowing conjugation as well as isotopy. */
+  public static boolean sameMainClass(LatinSquare a, LatinSquare b) {
+    return a.order() == b.order() && mainClassCanonical(a).equals(mainClassCanonical(b));
+  }
+
   /** The lexicographically least grid isotopic to {@code square}. */
   public static LatinSquare canonical(LatinSquare square) {
     int n = square.order();
