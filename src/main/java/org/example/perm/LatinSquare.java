@@ -209,6 +209,21 @@ public final class LatinSquare {
     return PermutationSequence.of(rows);
   }
 
+  /**
+   * The columns as a sequence of permutations, each mapping a row index to the symbol it holds.
+   * This is the transpose's {@link #rowsAsSequence()}, and differencing along it is the other
+   * direction in which a square can be differentiated.
+   *
+   * @throws IllegalArgumentException if some column is not a permutation of {@code 0..n-1}
+   */
+  public PermutationSequence columnsAsSequence() {
+    List<Permutation> columns = new ArrayList<>();
+    for (int index = 0; index < grid.length; index++) {
+      columns.add(Permutation.of(column(index)));
+    }
+    return PermutationSequence.of(columns);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
