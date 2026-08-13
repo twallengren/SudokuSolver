@@ -76,6 +76,35 @@ public final class Derivative {
     return PermutationSequence.of(result);
   }
 
+  /**
+   * The inverse of D: given a target derivative {@code t} and a starting term, builds the sequence
+   * {@code s} with {@code D(s) = t}, if one exists.
+   *
+   * <p>Setting {@code s(i+1) = t(i) . s(i)} determines everything from {@code s(0)}, but the
+   * sequence must close up: going all the way round must return to where it started. That happens
+   * exactly when the product of the terms of {@code t} is the identity, which is the discrete
+   * analogue of a closed loop integral vanishing. Otherwise no antiderivative exists.
+   *
+   * @return the antiderivative, or empty if {@code t} does not integrate
+   */
+  public static Optional<PermutationSequence> integrate(PermutationSequence t, Permutation start) {
+    List<Permutation> terms = t.steps();
+    Permutation loop = Permutation.identity(t.order());
+    for (Permutation term : terms) {
+      loop = loop.andThen(term);
+    }
+    if (!loop.isIdentity()) {
+      return Optional.empty();
+    }
+    List<Permutation> result = new ArrayList<>(terms.size());
+    Permutation current = start;
+    for (Permutation term : terms) {
+      result.add(current);
+      current = current.andThen(term);
+    }
+    return Optional.of(PermutationSequence.of(result));
+  }
+
   /** Whether every term is the identity — the fixed point D drives towards. */
   public static boolean isConstantIdentity(PermutationSequence sequence) {
     return sequence.steps().stream().allMatch(Permutation::isIdentity);
