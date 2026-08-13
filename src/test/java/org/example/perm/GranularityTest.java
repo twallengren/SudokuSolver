@@ -1,6 +1,7 @@
 package org.example.perm;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -101,5 +102,40 @@ class GranularityTest {
                         .equals(Classifier.profile(s, false, LIMIT, Classifier.CYCLE_ONLY)))
             .count();
     assertEquals(11, identical, "only half of the order-6 classes agree across the two directions");
+  }
+
+  @Test
+  void theHybridKeyMatchesTheFullShapeEverywhereTested() {
+    // "steps to reach the identity, or else the cycle length" — one number instead of a pair.
+    assertEquals(2, separated(4, Classifier.ORDER_OR_CYCLE, false));
+    assertEquals(2, separated(5, Classifier.ORDER_OR_CYCLE, false));
+    assertEquals(21, separated(6, Classifier.ORDER_OR_CYCLE, false));
+    assertEquals(22, separated(6, Classifier.ORDER_OR_CYCLE, true));
+  }
+
+  @Test
+  void theHybridRecoversWhatCycleOnlyLoses() {
+    assertEquals(2, separated(4, Classifier.ORDER_OR_CYCLE, false));
+    assertEquals(1, separated(4, Classifier.CYCLE_ONLY, false));
+  }
+
+  @Test
+  void dHasFixedPointsOtherThanTheIdentity() {
+    // D(s) = s means s(i+1) = s(i)^2. For g of order 3 the sequence g^2, g, g^2, ... closes up
+    // over six terms, so it is fixed by D without being the all-identity state.
+    Permutation g = Permutation.of(1, 2, 0, 5, 3, 4);
+    assertEquals(3, g.order());
+    Permutation gSquared = g.andThen(g);
+
+    PermutationSequence fixed = PermutationSequence.of(gSquared, g, gSquared, g, gSquared, g);
+    assertEquals(
+        fixed, Derivative.apply(fixed, Wrap.CYCLIC, Quotient.AFTER), "D must fix this sequence");
+    assertFalse(Derivative.isConstantIdentity(fixed), "but it is not the identity state");
+
+    // So a period-1 orbit is not the same thing as a convergent one.
+    Spectrum spectrum =
+        Derivative.spectrum(fixed, Wrap.CYCLIC, Quotient.AFTER, LIMIT).orElseThrow();
+    assertEquals(1, spectrum.period());
+    assertFalse(spectrum.reachesIdentity());
   }
 }

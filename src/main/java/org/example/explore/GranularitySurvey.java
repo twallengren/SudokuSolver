@@ -31,12 +31,19 @@ public final class GranularitySurvey {
       List<LatinSquare> classes = isotopyRepresentatives(n);
       System.out.println("===== order " + n + ": " + classes.size() + " isotopy classes =====");
 
-      score("full shape, rows only    ", classes, Classifier.FULL_SHAPE, false);
-      score("full shape, rows+columns ", classes, Classifier.FULL_SHAPE, true);
-      score("cycle only, rows only    ", classes, Classifier.CYCLE_ONLY, false);
-      score("cycle only, rows+columns ", classes, Classifier.CYCLE_ONLY, true);
+      score("full shape,     rows only    ", classes, Classifier.FULL_SHAPE, false);
+      score("full shape,     rows+columns ", classes, Classifier.FULL_SHAPE, true);
+      score("order-or-cycle, rows only    ", classes, Classifier.ORDER_OR_CYCLE, false);
+      score("order-or-cycle, rows+columns ", classes, Classifier.ORDER_OR_CYCLE, true);
+      score("bare number,    rows only    ", classes, Classifier.BARE_NUMBER, false);
+      score("bare number,    rows+columns ", classes, Classifier.BARE_NUMBER, true);
+      score("cycle only,     rows only    ", classes, Classifier.CYCLE_ONLY, false);
+      score("cycle only,     rows+columns ", classes, Classifier.CYCLE_ONLY, true);
 
       redundancy(classes);
+      if (n == 6) {
+        detail(classes, 5, 22);
+      }
       System.out.println();
     }
   }
@@ -77,6 +84,23 @@ public final class GranularitySurvey {
     System.out.printf(
         "  cycle-only row and column profiles identical for %d of %d classes%n",
         identical, classes.size());
+  }
+
+  /** Shows exactly what two colliding classes share and where they differ. */
+  private static void detail(List<LatinSquare> classes, int... oneBasedIndices) {
+    for (int index : oneBasedIndices) {
+      LatinSquare square = classes.get(index - 1);
+      System.out.println("  --- class " + index + " ---");
+      System.out.println(indent(square.toString()));
+      System.out.println(
+          "    cycle only: " + Classifier.profile(square, true, LIMIT, Classifier.CYCLE_ONLY));
+      System.out.println(
+          "    full shape: " + Classifier.profile(square, true, LIMIT, Classifier.FULL_SHAPE));
+    }
+  }
+
+  private static String indent(String text) {
+    return "    " + text.replace(System.lineSeparator(), System.lineSeparator() + "    ");
   }
 
   private static List<LatinSquare> isotopyRepresentatives(int n) {

@@ -48,6 +48,28 @@ public final class Classifier {
   public static final Function<Optional<Derivative.Spectrum>, String> CYCLE_ONLY =
       spectrum -> spectrum.map(s -> "cycle " + s.period()).orElse("unresolved");
 
+  /**
+   * Keys a convergent orbit by how long it took to reach the identity, and any other orbit by its
+   * cycle length — keeping the two cases apart. Since a convergent orbit always has period 1, this
+   * loses nothing on the convergent side and only drops the tail on the cyclic side.
+   */
+  public static final Function<Optional<Derivative.Spectrum>, String> ORDER_OR_CYCLE =
+      spectrum ->
+          spectrum
+              .map(s -> s.reachesIdentity() ? "order " + s.tail() : "cycle " + s.period())
+              .orElse("unresolved");
+
+  /**
+   * The same quantity reported as a bare number, so that a square converging in 30 steps and one
+   * cycling with period 30 are recorded identically. Included to measure what that conflation
+   * costs.
+   */
+  public static final Function<Optional<Derivative.Spectrum>, String> BARE_NUMBER =
+      spectrum ->
+          spectrum
+              .map(s -> String.valueOf(s.reachesIdentity() ? s.tail() : s.period()))
+              .orElse("unresolved");
+
   /** One direction of the invariant, keyed by full orbit shape. */
   public static Map<String, Integer> profile(LatinSquare square, boolean alongRows, int limit) {
     return profile(square, alongRows, limit, FULL_SHAPE);
