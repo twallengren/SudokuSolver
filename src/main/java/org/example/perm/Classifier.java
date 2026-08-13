@@ -3,7 +3,9 @@ package org.example.perm;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
+import java.util.function.Function;
 
 /**
  * The D-orbit invariant of a Latin square: the multiset of orbit shapes over every ordering of the
@@ -35,8 +37,28 @@ public final class Classifier {
     return new Profile(profile(square, true, limit), profile(square, false, limit));
   }
 
-  /** One direction of the invariant. */
+  /** Keys an orbit by its full shape: both the tail and the cycle length. */
+  public static final Function<Optional<Derivative.Spectrum>, String> FULL_SHAPE =
+      spectrum -> spectrum.map(Derivative.Spectrum::toString).orElse("unresolved");
+
+  /**
+   * Keys an orbit by cycle length alone, discarding the tail. The cycle is the attractor the orbit
+   * settles into; the tail only records how far the starting point sat from it.
+   */
+  public static final Function<Optional<Derivative.Spectrum>, String> CYCLE_ONLY =
+      spectrum -> spectrum.map(s -> "cycle " + s.period()).orElse("unresolved");
+
+  /** One direction of the invariant, keyed by full orbit shape. */
   public static Map<String, Integer> profile(LatinSquare square, boolean alongRows, int limit) {
+    return profile(square, alongRows, limit, FULL_SHAPE);
+  }
+
+  /** One direction of the invariant, keyed however the caller chooses. */
+  public static Map<String, Integer> profile(
+      LatinSquare square,
+      boolean alongRows,
+      int limit,
+      Function<Optional<Derivative.Spectrum>, String> key) {
     List<Permutation> terms =
         (alongRows ? square.rowsAsSequence() : square.columnsAsSequence()).steps();
     int n = terms.size();
@@ -47,13 +69,12 @@ public final class Classifier {
         reordered.add(terms.get(index));
       }
       String shape =
-          Derivative.spectrum(
+          key.apply(
+              Derivative.spectrum(
                   PermutationSequence.of(reordered),
                   Derivative.Wrap.CYCLIC,
                   Derivative.Quotient.AFTER,
-                  limit)
-              .map(Derivative.Spectrum::toString)
-              .orElse("unresolved");
+                  limit));
       profile.merge(shape, dihedralOrbitSize(ordering), Integer::sum);
     }
     return profile;
